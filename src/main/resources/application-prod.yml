@@ -1,0 +1,13 @@
+quarkus:
+  http:
+    port: 80
+
+# Database configuration for production environment
+quarkus.datasource:
+  jdbc.url: jdbc:postgresql://your_production_db_host:5432/payments_app_db_prod
+  jdbc.user: your_prod_user
+  jdbc.password: your_prod_password
+
+# Payment provider configurations for production
+stripe:
+  apiKey: your_stripe_production_api_key

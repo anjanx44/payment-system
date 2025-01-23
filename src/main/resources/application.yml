@@ -1,0 +1,11 @@
+quarkus:
+  http:
+    port: 8080
+
+# Logging configuration
+quarkus.log.level: INFO
+quarkus.log.file: /dev/stdout
+
+# Flyway configuration
+quarkus.flyway:
+  locations: classpath:db/migration
