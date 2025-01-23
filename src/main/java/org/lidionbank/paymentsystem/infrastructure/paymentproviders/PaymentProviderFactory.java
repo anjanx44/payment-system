@@ -1,6 +1,5 @@
 package org.lidionbank.paymentsystem.infrastructure.paymentproviders;
 
-
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

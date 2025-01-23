@@ -1,19 +1,26 @@
 package org.lidionbank.paymentsystem.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+@Data
 public class PaymentRequest {
-
+    @NotNull
+    @Positive
     private BigDecimal amount;
-    private String currency;
-    private String customerId;
-    private String country;
-    private String industry;
 
-    // ... (Getters and Setters) ...
+    @NotNull
+    private String currency;
+
+    @NotNull
+    private String customerId;
+
+    @NotNull
+    private String provider;
+
+    @NotNull
+    private String country; // Added country field
 }
