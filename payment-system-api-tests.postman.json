@@ -1,0 +1,54 @@
+{
+  "info": {
+    "name": "Payment System API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Process Payment - Stripe",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/v1/payments",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "v1", "payments"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"amount\": 100.00,\n    \"currency\": \"USD\",\n    \"customerId\": \"cust_123\",\n    \"provider\": \"Stripe\",\n    \"country\": \"US\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Process Payment - PayPal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/v1/payments",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "v1", "payments"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"amount\": 50.00,\n    \"currency\": \"EUR\",\n    \"customerId\": \"cust_456\",\n    \"provider\": \"PayPal\",\n    \"country\": \"DE\"\n}"
+        }
+      }
+    }
+  ]
+}

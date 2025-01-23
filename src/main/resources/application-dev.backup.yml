@@ -1,0 +1,44 @@
+## Development profile configuration
+#quarkus:
+#  profile: dev
+#  live-reload:
+#    enabled: true
+#  debug:
+#    enabled: true
+#    port: 5005
+#  log:
+#    category:
+#      "org.lidionbank.paymentsystem":
+#        level: DEBUG
+#
+#  datasource:
+#    db-kind: postgresql
+#    username: postgres
+#    password: postgres
+#    jdbc:
+#      url: jdbc:postgresql://localhost:5432/payment_db
+#
+#amqp:
+#  host: localhost
+#  port: 5672
+#  username: guest
+#  password: guest
+#
+#payment:
+#  providers:
+#    bkash:
+#      enabled: true
+#      username: ${BKASH_USERNAME:test}
+#      password: ${BKASH_PASSWORD:test}
+#      app-key: ${BKASH_APP_KEY:test}
+#      app-secret: ${BKASH_APP_SECRET:test}
+#      sandbox: true
+#    nagad:
+#      enabled: true
+#      merchant-id: ${NAGAD_MERCHANT_ID:test}
+#      merchant-key: ${NAGAD_MERCHANT_KEY:test}
+#      public-key: ${NAGAD_PUBLIC_KEY:test}
+#      sandbox: true
+#    stripe:
+#      enabled: true
+#      api-key: ${STRIPE_API_KEY:test}
