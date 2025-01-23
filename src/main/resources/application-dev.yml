@@ -2,12 +2,13 @@ quarkus:
   http:
     port: 8081  # Change port for development environment
 
-# Database configuration for development environment
-quarkus.datasource:
-  jdbc.url: jdbc:postgresql://localhost:5432/payments_app_db_dev  # Replace with your database name
-  jdbc.user: postgres  # Replace with your PostgreSQL username
-  jdbc.password: 47Ayan96  # Replace with your PostgreSQL password
+  # Database configuration for development environment
+  datasource:
+    jdbc:
+      url: jdbc:postgresql://localhost:5432/payments_app_db_dev  # Replace with your database name
+      user: postgres  # Replace with your PostgreSQL username
+      password: 47Ayan96  # Replace with your PostgreSQL password
 
-# Enable Dev Services
-quarkus.dev-services:
-  enabled: true  # Automatically start a PostgreSQL container if none is running
+  # Enable Dev Services
+  dev-services:
+    enabled: true  # Automatically start a PostgreSQL container if none is running
