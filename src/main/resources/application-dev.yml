@@ -1,14 +1,27 @@
+# Development profile configuration
 quarkus:
-  http:
-    port: 8081  # Change port for development environment
-
-  # Database configuration for development environment
+  profile: dev
+  live-reload:
+    enabled: true
+  debug:
+    enabled: true
+    port: 5005
+  log:
+    category:
+      "org.lidionbank.paymentsystem":
+        level: DEBUG
+  
   datasource:
+    db-kind: postgresql
+    username: postgres
+    password: postgres
     jdbc:
-      url: jdbc:postgresql://localhost:5432/payments_app_db_dev  # Replace with your database name
-      user: postgres  # Replace with your PostgreSQL username
-      password: 47Ayan96  # Replace with your PostgreSQL password
+      url: jdbc:postgresql://localhost:5432/payment_db
 
-  # Enable Dev Services
-  dev-services:
-    enabled: true  # Automatically start a PostgreSQL container if none is running
+amqp:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+
+

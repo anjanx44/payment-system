@@ -1,12 +1,129 @@
-quarkus:
-  http:
-    port: 8080
+mp:
+  messaging:
+    incoming:
+      payment-processing:
+        connector: smallrye-amqp
+        address: payment-processing
+        broadcast: true
+    connector:
+      smallrye-amqp:
+        host: ${AMQP_HOST:localhost}
+        port: ${AMQP_PORT:5672}
+        username: ${AMQP_USERNAME:guest}
+        password: ${AMQP_PASSWORD:guest}
 
-  # Logging configuration
-  log:
-    level: INFO
-    file: /dev/stdout
+quarkus:
+  application:
+    name: payment-system
+
+  # Profile configuration
+  profile: ${QUARKUS_PROFILE:dev}
+
+  # Datasource configuration
+  datasource:
+    db-kind: postgresql
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    jdbc:
+      url: ${DB_URL:jdbc:postgresql://localhost:5432/payment_db}
+
+  # Hibernate ORM configuration
+  hibernate-orm:
+    database:
+      generation: none
+    log:
+      sql: true
+      format-sql: true
 
   # Flyway configuration
   flyway:
-    locations: classpath:db/migration
+    migrate-at-start: true
+    baseline-on-migrate: true
+    locations: db/migration
+
+  # Health check configuration
+  smallrye-health:
+    ui:
+      enable: true
+
+  # AMQP configuration
+  smallrye-reactive-messaging:
+    health:
+      enabled: true
+
+  # Dev Services configuration
+  devservices:
+    enabled: ${QUARKUS_DEVSERVICES_ENABLED:false}
+
+  # Log configuration
+  log:
+    level: ${LOG_LEVEL:INFO}
+    category:
+      "org.lidionbank.paymentsystem":
+        level: ${APP_LOG_LEVEL:INFO}
+      "io.quarkus":
+        level: ${QUARKUS_LOG_LEVEL:INFO}
+
+# Payment provider configuration
+payment:
+  providers:
+    stripe:
+      enabled: ${STRIPE_ENABLED:true}
+      api-key: ${STRIPE_API_KEY:}
+    paypal:
+      enabled: ${PAYPAL_ENABLED:true}
+      client-id: ${PAYPAL_CLIENT_ID:}
+      client-secret: ${PAYPAL_CLIENT_SECRET:}
+
+---
+# Development profile specific configuration
+"%dev":
+  quarkus:
+    live-reload:
+      enabled: true
+    debug:
+      enabled: true
+      port: 5005
+    log:
+      category:
+        "org.lidionbank.paymentsystem":
+          level: DEBUG
+
+    datasource:
+      db-kind: postgresql
+      username: postgres
+      password: postgres
+      jdbc:
+        url: jdbc:postgresql://localhost:5432/payment_db
+
+    devservices:
+      enabled: true
+
+  mp:
+    messaging:
+      connector:
+        smallrye-amqp:
+          host: localhost
+          port: 5672
+          username: guest
+          password: guest
+
+---
+# Production profile specific configuration
+"%prod":
+  quarkus:
+    devservices:
+      enabled: false
+    log:
+      category:
+        "org.lidionbank.paymentsystem":
+          level: INFO
+
+  mp:
+    messaging:
+      connector:
+        smallrye-amqp:
+          host: ${AMQP_HOST}
+          port: ${AMQP_PORT}
+          username: ${AMQP_USERNAME}
+          password: ${AMQP_PASSWORD}
