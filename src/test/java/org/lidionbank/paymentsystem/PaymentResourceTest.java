@@ -1,4 +1,4 @@
-package org.lidionbank;
+package org.lidionbank.paymentsystem;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
-class GreetingResourceTest {
+class PaymentResourceTest {
     @Test
     void testHelloEndpoint() {
         given()
