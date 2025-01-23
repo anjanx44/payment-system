@@ -1,10 +1,29 @@
-#Maven
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.jmod
+
+# Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 release.properties
 .flattened-pom.xml
+dependency-reduced-pom.xml
+
+# Quarkus
+/.quarkus/
+.certs/
+.quarkus/cli/plugins/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
 
 # Eclipse
 .project
@@ -12,34 +31,106 @@ release.properties
 .settings/
 bin/
 
-# IntelliJ
-.idea
-*.ipr
-*.iml
-*.iws
-
 # NetBeans
 nb-configuration.xml
 
 # Visual Studio Code
-.vscode
-.factorypath
+.vscode/
 
-# OSX
+# Operating System Files
 .DS_Store
+Thumbs.db
 
 # Vim
 *.swp
 *.swo
 
-# patch
+# Logs
+*.log
+
+# Environment Files
+.env
+.env.local
+.env.*.local
+
+# Docker
+*.env
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.swp
+*.swo
 *.orig
 *.rej
 
-# Local environment
-.env
+# Patch Files
+*.patch
 
-# Plugin directory
-/.quarkus/cli/plugins/
+# Compiled Dynamic Libraries
+*.dll
+*.so
+*.dylib
+
 # TLS Certificates
-.certs/
+*.crt
+*.key
+
+# System Files
+Thumbs.db
+desktop.ini
+
+# JetBrains IDEs
+.idea/
+*.ipr
+*.iws
+*.iml
+
+# Java Security Policy
+.policy
+
+# Local Security Files
+keystore
+truststore
+
+# Unit Test Reports
+/target/surefire-reports/
+/target/failsafe-reports/
+
+# Build Tool Artifacts
+*.lock
+package-lock.json
+yarn.lock
+
+# Gradle Wrapper
+.gradle/
+*.bat
+*.jar
+
+# Coverage Reports
+/coverage/
+jacoco.exec
+*.ec
+
+# Backup Files
+*.~*
+*.bak
+*.swp
+*.tmp
+*.temp
+
+# Generated Files
+*.class
+*.log
+*.tmp
+
+# NodeJS (if used for frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
