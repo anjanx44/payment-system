@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.lidionbank.paymentsystem.domain.Payment;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -17,12 +18,18 @@ public class PaymentRepository {
 
     @Transactional
     public Payment save(Payment payment) {
-        entityManager.persist(payment);
+        if (payment.getId() == null) {
+            payment.setId(UUID.randomUUID());
+            entityManager.persist(payment);
+        } else {
+            payment = entityManager.merge(payment);
+        }
         return payment;
     }
 
-    public Payment findById(UUID id) {
-        return entityManager.find(Payment.class, id);
+    public Optional<Payment> findById(UUID id) {
+        Payment payment = entityManager.find(Payment.class, id);
+        return Optional.ofNullable(payment);
     }
 
     public List<Payment> findByStatus(Payment.PaymentStatus status) {

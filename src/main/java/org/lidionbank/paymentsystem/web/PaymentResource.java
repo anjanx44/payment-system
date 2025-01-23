@@ -1,4 +1,4 @@
-package org.lidionbank.paymentsystem.resources;
+package org.lidionbank.paymentsystem.web;
 
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -17,10 +17,11 @@ import org.lidionbank.paymentsystem.infrastructure.services.PaymentService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-@Path("/payments")
+@Path("/api/v1/payments")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PaymentResource {
@@ -86,9 +87,9 @@ public class PaymentResource {
                         .build();
             }
 
-            Payment payment = paymentRepository.findById(id);
+            Optional<Payment> payment = paymentRepository.findById(id);
 
-            if (payment == null) {
+            if (payment.isEmpty()) {
                 LOGGER.warning("Payment not found for ID: " + id);
                 ErrorResponse error = ErrorResponse.notFound(
                         "Payment not found",
