@@ -13,11 +13,14 @@ import java.util.logging.Logger;
 
 @ApplicationScoped
 public class PaddlePaymentProvider implements PaymentProvider {
+
     private static final Logger LOGGER = Logger.getLogger(PaddlePaymentProvider.class.getName());
 
+    // Supported countries and currencies for Paddle payments
     private static final List<String> SUPPORTED_COUNTRIES = Arrays.asList("US", "GB", "DE", "FR", "BD");
     private static final List<String> SUPPORTED_CURRENCIES = Arrays.asList("USD", "EUR", "GBP", "BDT");
 
+    // Configuration properties for Paddle payment provider
     @Inject
     @ConfigProperty(name = "quarkus.payment.providers.paddle.enabled", defaultValue = "false")
     boolean paddleEnabled;
@@ -30,6 +33,13 @@ public class PaddlePaymentProvider implements PaymentProvider {
     @ConfigProperty(name = "quarkus.payment.providers.paddle.api-key")
     String apiKey;
 
+    /**
+     * Processes the payment request via Paddle. If Paddle payments are enabled and the request is valid,
+     * a payment link is generated and returned as part of the payment response.
+     *
+     * @param request The payment request containing the necessary details.
+     * @return The payment response with the result of the payment processing.
+     */
     @Override
     public PaymentResponse processPayment(PaymentRequest request) {
         try {
@@ -48,7 +58,7 @@ public class PaddlePaymentProvider implements PaymentProvider {
                 );
             }
 
-            // Create Paddle Payment Link
+            // Create Paddle payment link
             String paymentLink = createPaddlePaymentLink(request);
 
             return new PaymentResponse(
@@ -67,11 +77,18 @@ public class PaddlePaymentProvider implements PaymentProvider {
         }
     }
 
+    /**
+     * Creates a payment link using Paddle's payment API.
+     *
+     * @param request The payment request containing the necessary information.
+     * @return The generated payment link as a string.
+     * @throws Exception If the payment link creation fails.
+     */
     private String createPaddlePaymentLink(PaymentRequest request) throws Exception {
-        // Make a HTTP POST request to Paddle's /2.0/payment/links endpoint
+        // Paddle API URL for creating payment links
         String paddleApiUrl = "https://vendors.paddle.com/api/2.0/payment/links";
 
-        // Construct payload
+        // Construct the payload to send in the request
         String payload = String.format(
                 "vendor_id=%s&vendor_auth_code=%s&title=%s&amount=%s&currency=%s&return_url=%s",
                 vendorId,
@@ -82,8 +99,7 @@ public class PaddlePaymentProvider implements PaymentProvider {
                 "https://your-return-url.com"
         );
 
-        // Send HTTP request (use any HTTP client like WebClient, OkHttp, etc.)
-        // Example using Java's HttpClient:
+        // Send HTTP request to Paddle API to create payment link
         java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
         java.net.http.HttpRequest httpRequest = java.net.http.HttpRequest.newBuilder()
                 .uri(java.net.URI.create(paddleApiUrl))
@@ -97,17 +113,17 @@ public class PaddlePaymentProvider implements PaymentProvider {
             throw new Exception("Failed to create Paddle payment link: " + response.body());
         }
 
-        // Parse response (assuming JSON response)
-        // Extract "url" from the response JSON
-        String paymentLink = extractPaymentLink(response.body());
-        LOGGER.info("Payment link created: " + paymentLink);
-
-        return paymentLink;
+        // Parse the response and extract the payment link
+        return extractPaymentLink(response.body());
     }
 
+    /**
+     * Extracts the payment link from the Paddle API response.
+     *
+     * @param responseBody The response body from the Paddle API.
+     * @return The extracted payment link.
+     */
     private String extractPaymentLink(String responseBody) {
-        // Use a JSON library to extract the payment link from the response
-        // Example with Jackson:
         try {
             com.fasterxml.jackson.databind.JsonNode jsonNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(responseBody);
             return jsonNode.get("response").get("url").asText();
@@ -117,6 +133,13 @@ public class PaddlePaymentProvider implements PaymentProvider {
         }
     }
 
+    /**
+     * Checks if the payment request is supported by Paddle.
+     * A request is supported if the country, currency, and amount meet the provider's requirements.
+     *
+     * @param request The payment request to validate.
+     * @return True if the payment request is supported, false otherwise.
+     */
     @Override
     public boolean supports(PaymentRequest request) {
         if (!paddleEnabled || request == null) {
@@ -134,20 +157,41 @@ public class PaddlePaymentProvider implements PaymentProvider {
         return isCountrySupported && isCurrencySupported && isValidAmount;
     }
 
+    /**
+     * Validates if the amount in the payment request is greater than zero.
+     *
+     * @param request The payment request containing the amount to validate.
+     * @return True if the amount is valid (greater than zero), false otherwise.
+     */
     private boolean isValidAmount(PaymentRequest request) {
         return request.getAmount() != null &&
                 request.getAmount().compareTo(BigDecimal.ZERO) > 0;
     }
 
+    /**
+     * Retrieves the name of the payment provider.
+     *
+     * @return The name of the provider (PADDLE).
+     */
     @Override
     public String getProviderName() {
         return "PADDLE";
     }
 
+    /**
+     * Retrieves the list of supported countries by Paddle.
+     *
+     * @return The list of supported countries.
+     */
     public List<String> getSupportedCountries() {
         return SUPPORTED_COUNTRIES;
     }
 
+    /**
+     * Retrieves the list of supported currencies by Paddle.
+     *
+     * @return The list of supported currencies.
+     */
     public List<String> getSupportedCurrencies() {
         return SUPPORTED_CURRENCIES;
     }

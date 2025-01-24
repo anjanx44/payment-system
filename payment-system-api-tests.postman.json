@@ -1,54 +1,309 @@
 {
-  "info": {
-    "name": "Payment System API Tests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Process Payment - Stripe",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8081/api/v1/payments",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8081",
-          "path": ["api", "v1", "payments"]
-        },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"amount\": 100.00,\n    \"currency\": \"USD\",\n    \"customerId\": \"cust_123\",\n    \"provider\": \"Stripe\",\n    \"country\": \"US\"\n}"
-        }
-      }
-    },
-    {
-      "name": "Process Payment - PayPal",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8081/api/v1/payments",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8081",
-          "path": ["api", "v1", "payments"]
-        },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"amount\": 50.00,\n    \"currency\": \"EUR\",\n    \"customerId\": \"cust_456\",\n    \"provider\": \"PayPal\",\n    \"country\": \"DE\"\n}"
-        }
-      }
-    }
-  ]
+	"info": {
+		"_postman_id": "3005a32b-2d9c-44e0-b5d3-0b970db89a76",
+		"name": "Payment System API",
+		"description": "Collection for Payment System API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28130161"
+	},
+	"item": [
+		{
+			"name": "Create Small US Payment (Paddle)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 500.00,\n    \"currency\": \"USD\",\n    \"customerId\": \"CUST123\",\n    \"country\": \"US\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Large US Payment (Stripe)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 2500.00,\n    \"currency\": \"USD\",\n    \"customerId\": \"CUST456\",\n    \"country\": \"US\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Large European Payment (Stripe)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 2500.00,\n    \"currency\": \"EUR\",\n    \"customerId\": \"CUST789\",\n    \"country\": \"DE\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Small European Payment (Paddle)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 1000.00,\n    \"currency\": \"EUR\",\n    \"customerId\": \"CUST101\",\n    \"country\": \"DE\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Bangladesh Payment (BDT - Paddle)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 50000.00,\n    \"currency\": \"BDT\",\n    \"customerId\": \"CUST102\",\n    \"country\": \"BD\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Bangladesh Payment (USD - Stripe)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 1000.00,\n    \"currency\": \"USD\",\n    \"customerId\": \"CUST103\",\n    \"country\": \"BD\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Payment by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments/{{paymentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments",
+						"{{paymentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid Payment - Missing Field",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 500.00,\n    \"currency\": \"USD\",\n    \"customerId\": \"CUST123\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid Payment - Negative Amount",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": -100.00,\n    \"currency\": \"USD\",\n    \"customerId\": \"CUST123\",\n    \"country\": \"US\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid Payment - Unsupported Currency",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 500.00,\n    \"currency\": \"JPY\",\n    \"customerId\": \"CUST123\",\n    \"country\": \"US\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "paymentId",
+			"value": "123e4567-e89b-12d3-a456-426614174000"
+		}
+	]
 }
