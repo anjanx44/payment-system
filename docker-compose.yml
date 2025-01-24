@@ -1,74 +1,58 @@
 version: "3.8"
 
 services:
-  postgres:
+  db:
     image: postgres:latest
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - payment-network
-
-  artemis:
-    image: quay.io/artemiscloud/activemq-artemis-broker:latest
-    environment:
-      - AMQ_USER=${ARTEMIS_USERNAME:-admin}
-      - AMQ_PASSWORD=${ARTEMIS_PASSWORD:-admin}
-      - AMQ_EXTRA_ARGS=--no-autotune
-    ports:
-      - "8161:8161"  # Web Console
-      - "61616:61616" # Core Protocol
-      - "5672:5672"   # AMQP Protocol
-    volumes:
-      - artemis_data:/var/lib/artemis/data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8161"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - payment-network
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 47Ayan96
 
   payment-system:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8081:8081"
     environment:
-      - QUARKUS_DATASOURCE_JDBC_URL=${QUARKUS_DATASOURCE_JDBC_URL}
-      - QUARKUS_DATASOURCE_USERNAME=${QUARKUS_DATASOURCE_USERNAME}
-      - QUARKUS_DATASOURCE_PASSWORD=${QUARKUS_DATASOURCE_PASSWORD}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_URL=${DB_URL}
+      - AMQP_HOST=${AMQP_HOST}
+      - AMQP_PORT=${AMQP_PORT}
+      - AMQP_USERNAME=${AMQP_USERNAME}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
       - QUARKUS_PROFILE=${QUARKUS_PROFILE}
-      - MP_MESSAGING_CONNECTOR_SMALLRYE_AMQP_HOST=artemis
-      - MP_MESSAGING_CONNECTOR_SMALLRYE_AMQP_PORT=5672
-      - MP_MESSAGING_CONNECTOR_SMALLRYE_AMQP_USERNAME=${ARTEMIS_USERNAME:-admin}
-      - MP_MESSAGING_CONNECTOR_SMALLRYE_AMQP_PASSWORD=${ARTEMIS_PASSWORD:-admin}
+      - STRIPE_ENABLED=${STRIPE_ENABLED}
+      - STRIPE_API_KEY=${STRIPE_API_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - PADDLE_ENABLED=${PADDLE_ENABLED}
+      - PADDLE_VENDOR_ID=${PADDLE_VENDOR_ID}
+      - PADDLE_API_KEY=${PADDLE_API_KEY}
+      - PADDLE_SANDBOX_MODE=${PADDLE_SANDBOX_MODE}
     depends_on:
-      postgres:
-        condition: service_healthy
-      artemis:
-        condition: service_healthy
+      - postgres
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8081/q/health/live || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - payment-network
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
-  artemis_data:
-
-networks:
-  payment-network:
-    driver: bridge

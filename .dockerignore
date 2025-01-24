@@ -3,3 +3,11 @@
 !target/*-runner.jar
 !target/lib/*
 !target/quarkus-app/*
+
+target/
+.mvn/
+*.log
+Dockerfile
+docker-compose.yml
+node_modules/
+
