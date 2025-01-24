@@ -142,6 +142,52 @@ If you prefer to build a native executable for faster startup times and reduced 
 Once the application is running, you can verify that it works correctly by accessing the API endpoints using Postman or by visiting the exposed REST endpoints in a web browser, depending on your project setup.
 
 
+## Running the Application with Docker
+
+You can containerize and run the application using Docker. Follow the steps below to build and run the application inside a Docker container.
+
+### 1. Prerequisites
+
+Ensure you have Docker installed on your machine. You can download and install Docker from [Docker's official website](https://www.docker.com/get-started).
+
+### 2. Building the Docker Image
+
+1. Open a terminal in the project root directory.
+
+2. Build the Docker image using the following command:
+
+    ```bash
+    docker build -t payment-system .
+    ```
+
+   This command will create a Docker image named `payment-system` from the `Dockerfile` in the project directory.
+
+### 3. Running the Docker Container
+
+After building the Docker image, you can run the application in a Docker container.
+
+1. Run the container using the following command:
+
+    ```bash
+    docker run -d -p 8080:8080 --env-file .env payment-system
+    ```
+
+   This command does the following:
+   - Runs the `payment-system` image in detached mode (`-d`).
+   - Maps port `8080` from the container to port `8080` on your local machine (`-p 8080:8080`).
+   - Loads environment variables from the `.env` file using `--env-file .env`.
+
+2. The application will be accessible at [http://localhost:8080](http://localhost:8080).
+
+### 4. Stopping the Docker Container
+
+To stop the running Docker container, first, find the container ID by running:
+
+```bash
+docker ps
+```
+
+
 ## Importing the Postman Collection
 
 1. **Download or locate the Postman collection file**: The Postman collection file (`payment-system.postman_collection.json`) should be included in the project repository. Ensure the file is available in the project directory or download it if needed.
