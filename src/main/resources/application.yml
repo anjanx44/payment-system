@@ -4,6 +4,10 @@ quarkus:
   http:
     port: 8080
 
+  flyway:
+    migrate-at-start: true # Automatically apply migrations at application startup
+    locations: classpath:db/migration # Path to Flyway migration scripts
+
   # Database configuration
   datasource:
     db-kind: postgresql
@@ -11,6 +15,12 @@ quarkus:
     password: ${DB_PASSWORD:47Ayan96}
     jdbc:
       url: ${DB_URL:jdbc:postgresql://localhost:5432/payment_db}
+
+  hibernate-orm:
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    sql-load-script: no-file # Disable default SQL load script if not needed
+    database:
+      generation: none # Disable schema auto-creation since Flyway handles it
 
   # Debug and Development
   live-reload:
@@ -37,17 +47,6 @@ quarkus:
   smallrye-health:
     ui:
       enable: true
-
-  # Database configuration
-  hibernate-orm:
-    database:
-      generation: validate
-    log:
-      sql: true
-
-  # Disable Flyway
-  flyway:
-    enabled: false
 
 # Payment configuration
   payment:
