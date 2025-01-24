@@ -2,9 +2,7 @@ quarkus:
   application:
     name: payment-system
   http:
-    port: 8085   # Change from default 8080 to 8081
-
-  profile: dev
+    port: 8080
 
   # Database configuration
   datasource:
@@ -25,9 +23,11 @@ quarkus:
   log:
     category:
       "org.lidionbank.paymentsystem":
-        level: DEBUG
+        level: ${APP_LOG_LEVEL:DEBUG}
       "io.quarkus":
-        level: INFO
+        level: ${QUARKUS_LOG_LEVEL:INFO}
+      "com.stripe":
+        level: DEBUG
 
   # Disable dev services
   devservices:
@@ -38,49 +38,51 @@ quarkus:
     ui:
       enable: true
 
-#  # Hibernate configuration
-#  hibernate-orm:
-#    database:
-#      generation: validate
-#    log:
-#      sql: true
-#      format-sql: true
-#
-#  # Flyway configuration
-#  flyway:
-#    migrate-at-start: true
-#    baseline-on-migrate: true
-#    locations: db/migration
-
-
+  # Database configuration
   hibernate-orm:
     database:
       generation: validate
     log:
       sql: true
 
-  # Disable Flyway since we created table manually
+  # Disable Flyway
   flyway:
     enabled: false
 
 # Payment configuration
-payment:
-  providers:
-    stripe:
-      enabled: true
-      api-key: ${STRIPE_API_KEY}
-    bkash:
-      enabled: false
-    nagad:
-      enabled: false
+  payment:
+    providers:
+      # Stripe Configuration
+      stripe:
+        enabled: ${STRIPE_ENABLED:true}
+        api-key: ${STRIPE_API_KEY:sk_test_51CIaNPFXhG69hD449U9VOThRvRldAyNjWA0dGIey0JOg3gYtfqU3A4v2d1CJiT14JHBQRLMr4ltI9yoz91IEeBDk00DodlAiPz}
+        webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+        supported-currencies: USD,EUR,GBP,BDT
+        supported-countries: US,GB,DE,FR,BD
+        min-amount: 1
+        max-amount: 999999.99
 
+      # Paddle Configuration
+      paddle:
+        enabled: ${PADDLE_ENABLED:true}
+        vendor-id: ${PADDLE_VENDOR_ID:26803}
+        api-key: ${PADDLE_API_KEY:ae074098be1f87738d5d5a6816950cd60842e583e52751d138}
+        webhook-secret: ${PADDLE_WEBHOOK_SECRET:}
+        sandbox-mode: ${PADDLE_SANDBOX_MODE:true}
+        supported-currencies: USD,EUR,GBP,BDT
+        supported-countries: US,GB,DE,FR,BD
+        min-amount: 1
+        max-amount: 999999.99
 
-# Messaging configuration (commented out for initial setup)
-# mp:
-#   messaging:
-#     connector:
-#       smallrye-amqp:
-#         host: localhost
-#         port: 5672
-#         username: guest
-#         password: guest
+    # Global payment settings
+    settings:
+      default-currency: USD
+      default-country: BD
+      retry:
+        max-attempts: 3
+        initial-interval: PT1S
+        max-interval: PT10S
+        multiplier: 2
+      timeout:
+        connect: 5000
+        read: 30000

@@ -8,6 +8,8 @@ import org.lidionbank.paymentsystem.domain.PaymentRequest;
 import org.lidionbank.paymentsystem.domain.PaymentResponse;
 import org.lidionbank.paymentsystem.infrastructure.database.PaymentRepository;
 import org.lidionbank.paymentsystem.infrastructure.exception.PaymentNotFoundException;
+import org.lidionbank.paymentsystem.infrastructure.paymentproviders.PaymentProvider;
+import org.lidionbank.paymentsystem.infrastructure.paymentproviders.PaymentProviderSelector;
 
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -20,6 +22,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Inject
     PaymentRepository paymentRepository;
 
+    @Inject
+    PaymentProviderSelector providerSelector;
+
     @Override
     @Transactional
     public PaymentResponse processPayment(PaymentRequest request) {
@@ -27,14 +32,12 @@ public class PaymentServiceImpl implements PaymentService {
             // Generate a unique payment ID
             UUID paymentId = UUID.randomUUID();
 
-            // Map the provider string to PaymentProvider enum
-            Payment.PaymentProvider provider;
-            try {
-                provider = Payment.PaymentProvider.valueOf(request.getProvider().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                LOGGER.warning("Invalid provider: " + request.getProvider());
-                return PaymentResponse.failed("Invalid payment provider", generateTransactionId());
-            }
+            // Get the appropriate payment provider
+            PaymentProvider provider = providerSelector.selectProvider(
+                    request.getCountry(),
+                    request.getAmount(),
+                    request.getCurrency()
+            );
 
             // Create a new payment entity
             Payment payment = Payment.builder()
@@ -42,8 +45,9 @@ public class PaymentServiceImpl implements PaymentService {
                     .amount(request.getAmount())
                     .currency(request.getCurrency())
                     .customerId(request.getCustomerId())
+                    .country(request.getCountry())
                     .status(Payment.PaymentStatus.PENDING)
-                    .provider(provider)
+                    .providerName(provider.getProviderName())  // Use provider name instead of enum
                     .build();
 
             // Save the payment
@@ -54,6 +58,9 @@ public class PaymentServiceImpl implements PaymentService {
                 LOGGER.severe("Failed to save payment: " + e.getMessage());
                 return PaymentResponse.failed("Failed to save payment", generateTransactionId());
             }
+
+            // Process the payment with the selected provider
+            PaymentResponse providerResponse = provider.processPayment(request);
 
             // Generate transaction ID
             String transactionId = generateTransactionId();
@@ -112,5 +119,4 @@ public class PaymentServiceImpl implements PaymentService {
                 return "Unknown payment status";
         }
     }
-
 }

@@ -162,9 +162,7 @@ public class PaymentResource {
                 request.getCustomerId() != null &&
                 !request.getCustomerId().trim().isEmpty() &&
                 request.getCountry() != null &&
-                !request.getCountry().trim().isEmpty() &&
-                request.getProvider() != null &&
-                !request.getProvider().trim().isEmpty();
+                !request.getCountry().trim().isEmpty();
     }
 
 

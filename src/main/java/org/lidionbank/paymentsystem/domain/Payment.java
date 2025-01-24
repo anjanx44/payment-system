@@ -26,12 +26,6 @@ public class Payment {
         SUCCESS
     }
 
-    public enum PaymentProvider {
-        PAYPAL,
-        STRIPE,
-        BANK_TRANSFER
-    }
-
     @Id
     private UUID id;
 
@@ -44,13 +38,15 @@ public class Payment {
     @Column(name = "customer_id", nullable = false)
     private String customerId;
 
+    @Column(nullable = false)
+    private String country;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "provider", nullable = false)
-    private PaymentProvider provider;
+    private String providerName;  // Changed from enum to String
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

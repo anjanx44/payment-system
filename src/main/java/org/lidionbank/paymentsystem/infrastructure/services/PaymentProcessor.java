@@ -5,7 +5,7 @@ import jakarta.inject.Inject;
 import org.lidionbank.paymentsystem.domain.PaymentRequest;
 import org.lidionbank.paymentsystem.domain.PaymentResponse;
 import org.lidionbank.paymentsystem.infrastructure.paymentproviders.PaymentProvider;
-import org.lidionbank.paymentsystem.infrastructure.paymentproviders.PaymentProviderFactory;
+import org.lidionbank.paymentsystem.infrastructure.paymentproviders.PaymentProviderSelector;
 
 import java.util.logging.Logger;
 
@@ -14,7 +14,7 @@ public class PaymentProcessor {
     private static final Logger LOGGER = Logger.getLogger(PaymentProcessor.class.getName());
 
     @Inject
-    PaymentProviderFactory paymentProviderFactory;
+    PaymentProviderSelector providerSelector;
 
     public PaymentResponse processPayment(PaymentRequest request) {
         try {
@@ -23,9 +23,15 @@ public class PaymentProcessor {
                 return new PaymentResponse("FAILED", "Invalid payment request", null);
             }
 
-            PaymentProvider provider = paymentProviderFactory.getPaymentProvider(request.getProvider());
+            // Get provider using selector instead of factory
+            PaymentProvider provider = providerSelector.selectProvider(
+                    request.getCountry(),
+                    request.getAmount(),
+                    request.getCurrency()
+            );
+
             if (provider == null) {
-                LOGGER.severe("Payment provider not found: " + request.getProvider());
+                LOGGER.severe("No suitable payment provider found");
                 return new PaymentResponse("FAILED", "Payment provider not available", null);
             }
 
@@ -34,11 +40,12 @@ public class PaymentProcessor {
                 return new PaymentResponse("FAILED", "Payment method not supported", null);
             }
 
+            LOGGER.info("Processing payment with provider: " + provider.getProviderName());
             return provider.processPayment(request);
 
         } catch (IllegalArgumentException e) {
-            LOGGER.severe("Invalid payment provider: " + e.getMessage());
-            return new PaymentResponse("FAILED", "Invalid payment provider", null);
+            LOGGER.severe("Invalid payment request: " + e.getMessage());
+            return new PaymentResponse("FAILED", "Invalid payment request", null);
         } catch (Exception e) {
             LOGGER.severe("Payment processing error: " + e.getMessage());
             return new PaymentResponse("FAILED", "Payment processing failed", null);

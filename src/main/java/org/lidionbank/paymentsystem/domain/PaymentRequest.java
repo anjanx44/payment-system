@@ -19,8 +19,5 @@ public class PaymentRequest {
     private String customerId;
 
     @NotNull
-    private String provider;
-
-    @NotNull
-    private String country; // Added country field
+    private String country;
 }
